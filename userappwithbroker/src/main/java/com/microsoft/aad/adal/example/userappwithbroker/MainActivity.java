@@ -165,12 +165,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         prepareRequestParameters(requestOptions);
 
-        callAcquireTokenSilent(requestOptions.getDataProfile().getText(),getUserIdBasedOnUPN(requestOptions.getLoginHint()),
+        callAcquireTokenSilent(requestOptions.getDataProfile().getText(),getUserIdBasedOnUPN(requestOptions.getLoginHint()+requestOptions.getAuthorityType().getText()),
                 requestOptions.getClientId().getText());
     }
 
     void prepareRequestParameters(final AcquireTokenFragment.RequestOptions requestOptions) {
-        final String authority = getAuthorityBasedOnUPN(requestOptions.getLoginHint());
+        final String authority = getAuthorityBasedOnUPN(requestOptions.getLoginHint() + requestOptions.getAuthorityType().getText());
         if (null != authority && !authority.isEmpty()) {
             mAuthority = authority;
             mAuthContext = new AuthenticationContext(mApplicationContext, mAuthority, false);
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         // Update this user for next call
                         if (authenticationResult.getUserInfo() != null) {
-                            saveUserIdFromAuthenticationResult(authenticationResult);
+                            saveUserIdFromAuthenticationResult(authenticationResult, mAuthContext.getAuthority());
                         }
                     }
 
@@ -290,13 +290,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * for later use.
      * To make the sample app easier, the saved data will be keyed by displayable id.
      */
-    private void saveUserIdFromAuthenticationResult(final AuthenticationResult authResult) {
+    private void saveUserIdFromAuthenticationResult(final AuthenticationResult authResult, final String authority) {
         mSharedPreference = getSharedPreferences(SHARED_PREFERENCE_STORE_USER_UNIQUEID, MODE_PRIVATE);
 
         final SharedPreferences.Editor prefEditor = mSharedPreference.edit();
-        prefEditor.putString(authResult.getUserInfo().getDisplayableId(), authResult.getUserInfo().getUserId());
+        prefEditor.putString(authResult.getUserInfo().getDisplayableId() + authority, authResult.getUserInfo().getUserId());
+        Log.e("Ashish", "saveUserIdFromAuthenticationResult "+authResult.getUserInfo().getDisplayableId() + authority + " = " + authResult.getUserInfo().getUserId());
         if (authResult.getAuthority() != null) {
-            prefEditor.putString(authResult.getUserInfo().getDisplayableId() + "authority", authResult.getAuthority());
+            prefEditor.putString(authResult.getUserInfo().getDisplayableId() + authority + "authority", authResult.getAuthority());
+            Log.e("Ashish", "saveUserIdFromAuthenticationResult2 "+authResult.getUserInfo().getDisplayableId() + authority + "authority");
         }
         prefEditor.apply();
     }
@@ -306,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * by displayable id.
      */
     private String getUserIdBasedOnUPN(final String upn) {
+        Log.e("Ashish", "getUserIdBasedOnUPN"+upn);
         mSharedPreference = getSharedPreferences(SHARED_PREFERENCE_STORE_USER_UNIQUEID, MODE_PRIVATE);
 
         return mSharedPreference.getString(upn, null);
@@ -332,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private String getAuthorityBasedOnUPN(final String upn) {
+        Log.e("Ashish", "getAuthorityBasedOnUPN"+upn);
         mSharedPreference = getSharedPreferences(SHARED_PREFERENCE_STORE_USER_UNIQUEID, MODE_PRIVATE);
         return mSharedPreference.getString(upn+"authority", null);
     }

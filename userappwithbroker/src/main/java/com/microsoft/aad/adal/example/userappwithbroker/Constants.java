@@ -30,7 +30,8 @@ package com.microsoft.aad.adal.example.userappwithbroker;
 public class Constants {
     enum AuthorityType {
         AAD_MSDEVEX("https://login.microsoftonline.com/msdevex.onmicrosoft.com"),
-        AAD_COMMON("https://login.microsoftonline.com/common");
+        AAD_COMMON("https://login.microsoftonline.com/common"),
+        AAD_GUEST("https://login.microsoftonline.com/nomfaad.onmicrosoft.com");
 
         private final String text;
         AuthorityType(String s) {
