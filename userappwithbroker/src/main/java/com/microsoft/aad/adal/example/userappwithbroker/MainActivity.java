@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAuthContext = new AuthenticationContext(mApplicationContext, mAuthority, false);
         } else {
             mAuthority = requestOptions.getAuthorityType().getText();
-            if (mAuthContext == null) {
+            if (mAuthContext == null ||!mAuthority.equals(mAuthContext.getAuthority())) {
                 mAuthContext = new AuthenticationContext(mApplicationContext, mAuthority, true);
             }
         }
