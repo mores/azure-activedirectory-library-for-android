@@ -54,6 +54,7 @@ import com.microsoft.aad.adal.Telemetry;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -69,6 +70,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AcquireTokenFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "UserAppWithBroker.Main";
+
+    private static final Map<String, String> mGuestATVerifierMap = new HashMap<>();
+
+    private static String shortenAT(final String at) {
+        return at.substring(0,3) + "..." + at.substring(at.length() - 3);
+    }
+
+    private void verifyGuestAT(final String authority, final String incomingAccessToken) {
+        final String TAG = "TOKEN_VERIFIER";
+        final String shortenedAT = shortenAT(incomingAccessToken);
+        if (null == mGuestATVerifierMap.get(authority)) {
+            // Contains no key for authority
+            Log.d(TAG, "No AT present for authority: " + authority);
+            Log.d(TAG, "Inserting...");
+            Log.d(TAG, "put(" + authority + ", " + shortenedAT + ")");
+            mGuestATVerifierMap.put(authority, incomingAccessToken);
+        } else {
+            // Has a key for this authority
+            final String existingAT = mGuestATVerifierMap.get(authority);
+            final boolean tokenMatch = existingAT.equals(incomingAccessToken);
+            Log.d(TAG, "AT already present for authority [" + authority + "]. Incoming token matches previous value? [" + tokenMatch + "]");
+            Log.d(TAG, "New token [" + shortenedAT + "] -- Token on disk [" + shortenAT(existingAT) + "]");
+            if (!tokenMatch) {
+                Log.e(TAG, "New token does not match previously stored token for authority: " + authority);
+                Log.e(TAG, "Inserting...");
+                Log.e(TAG, "put(" + authority + ", " + shortenedAT + ")");
+            }
+        }
+    }
 
     private SharedPreferences mSharedPreference;
     private Context mApplicationContext;
@@ -269,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public void onSuccess(AuthenticationResult authenticationResult) {
+                        verifyGuestAT(mAuthContext.getAuthority(), authenticationResult.getAccessToken());
                         mAuthResult = authenticationResult;
                         showMessage("Response from broker: " + authenticationResult.getAccessToken());
 
@@ -320,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onSuccess(AuthenticationResult authenticationResult) {
+                verifyGuestAT(mAuthContext.getAuthority(), authenticationResult.getAccessToken());
                 mAuthResult = authenticationResult;
                 showMessage("Response from broker: " + authenticationResult.getAccessToken());
             }
