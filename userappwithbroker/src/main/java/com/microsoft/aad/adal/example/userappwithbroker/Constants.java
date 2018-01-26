@@ -31,7 +31,9 @@ public class Constants {
     enum AuthorityType {
         AAD_COMMON("https://login.microsoftonline.com/common"),
         AAD_MSDEVEX("https://login.microsoftonline.com/msdevex.onmicrosoft.com"),
-        AAD_GUEST("https://login.microsoftonline.com/nomfaad.onmicrosoft.com");
+        AAD_GUEST("https://login.microsoftonline.com/nomfaad.onmicrosoft.com"),
+        AAD_WINDOWS_NET("https://login.windows.net/common");
+
 
         private final String text;
         AuthorityType(String s) {
@@ -75,7 +77,7 @@ public class Constants {
     }
 
     enum RedirectUri {
-        Regular("msauth://com.microsoft.aad.adal.userappwithbroker/IcB5PxIyvbLkbFVtBI%2FitkW%2Fejk%3D"),
+        Regular("msauth://com.microsoft.aad.adal.userappwithbroker/QK0hWtPIQviyU3IX8AhunaS0IY4%3D"),
         Broker("urn:ietf:wg:oauth:2.0:oob");
 
         private final String text;

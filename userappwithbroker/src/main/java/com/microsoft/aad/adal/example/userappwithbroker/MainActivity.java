@@ -48,6 +48,7 @@ import com.microsoft.aad.adal.AuthenticationContext;
 import com.microsoft.aad.adal.AuthenticationResult;
 import com.microsoft.aad.adal.AuthenticationSettings;
 import com.microsoft.aad.adal.IDispatcher;
+import com.microsoft.aad.adal.Logger;
 import com.microsoft.aad.adal.PromptBehavior;
 import com.microsoft.aad.adal.Telemetry;
 
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         prepareRequestParameters(requestOptions);
 
         callAcquireTokenSilent(requestOptions.getDataProfile().getText(),
-                getUserIdBasedOnUPN(requestOptions.getLoginHint(), requestOptions.getAuthorityType().getText()),
+                "455e898f-e388-4fc0-af81-03ca3aee1f16",
                 requestOptions.getClientId().getText());
     }
 
@@ -300,10 +301,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             final SharedPreferences.Editor prefEditor = mSharedPreference.edit();
             if (null != authResult.getAuthority()) {
                 //Save the preferred authority into the shared preference
+                Logger.v(TAG, "result authority: " + authResult.getAuthority() + ", request authority: " + mRequestAuthority);
                 prefEditor.putString((authResult.getUserInfo().getDisplayableId().trim() + ":" + authority.trim() +  ":authority").toLowerCase(), authResult.getAuthority().trim().toLowerCase());
             }
 
             if (null != authResult.getUserInfo() && null != authResult.getUserInfo().getUserId()) {
+                Logger.v(TAG, "userName: " + authResult.getUserInfo().getDisplayableId() + ", userId: " + authResult.getUserInfo().getUserId());
                 prefEditor.putString((authResult.getUserInfo().getDisplayableId().trim() + ":" + authority.trim() + ":userId").toLowerCase(), authResult.getUserInfo().getUserId().trim().toLowerCase());
             }
 

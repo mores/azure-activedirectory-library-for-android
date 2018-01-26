@@ -406,6 +406,7 @@ class BrokerProxy implements IBrokerProxy {
     private boolean isBrokerAccountServiceSupported() {
         final Intent brokerAccountServiceIntent = BrokerAccountServiceHandler.getIntentForBrokerAccountService(mContext);
         return isServiceSupported(mContext, brokerAccountServiceIntent);
+        //return false;
     }
 
     private boolean isServiceSupported(final Context context, final Intent intent) {
