@@ -130,6 +130,24 @@ public class AuthenticationContext {
         initialize(appContext, authority, tokenCacheStore, true, false);
     }
 
+    /**
+     * Force use of the legacy AccountManager code path in Broker. Defaults to false.
+     *
+     * @param skipService Boolean value to skip the BrokerAccountService.
+     */
+    void setSkipBrokerAccountService(final boolean skipService) {
+        mBrokerProxy.setSkipBrokerAccountService(skipService);
+    }
+
+    /**
+     * Gets the state of the skipBrokerAccountService flag.
+     *
+     * @return True, if the BrokerAccountService should be skipped. False otherwise.
+     */
+    boolean getSkipBrokerAccountService() {
+        return mBrokerProxy.getSkipBrokerAccountService();
+    }
+
     private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore,
                             boolean validateAuthority, boolean defaultCache) {
         if (appContext == null) {

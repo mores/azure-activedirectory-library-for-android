@@ -47,8 +47,6 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import org.json.JSONException;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,6 +91,8 @@ class BrokerProxy implements IBrokerProxy {
     private AccountManager mAcctManager;
 
     private Handler mHandler;
+
+    private static boolean mSkipBrokerAccountService = false;
 
     private final String mBrokerTag;
 
@@ -405,7 +405,7 @@ class BrokerProxy implements IBrokerProxy {
 
     private boolean isBrokerAccountServiceSupported() {
         final Intent brokerAccountServiceIntent = BrokerAccountServiceHandler.getIntentForBrokerAccountService(mContext);
-        return isServiceSupported(mContext, brokerAccountServiceIntent);
+        return (!mSkipBrokerAccountService) && isServiceSupported(mContext, brokerAccountServiceIntent);
     }
 
     private boolean isServiceSupported(final Context context, final Intent intent) {
@@ -712,6 +712,7 @@ class BrokerProxy implements IBrokerProxy {
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_REDIRECT, request.getRedirectUri());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_CLIENTID_KEY, request.getClientId());
         brokerOptions.putString(AuthenticationConstants.Broker.ADAL_VERSION_KEY, request.getVersion());
+        brokerOptions.putString(AuthenticationConstants.Broker.SKIP_BROKERACCOUNTSERVICE, String.valueOf(mSkipBrokerAccountService));
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_USERINFO_USERID, request.getUserId());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_EXTRA_QUERY_PARAM,
                 request.getExtraQueryParamsAuthentication());
@@ -1044,5 +1045,13 @@ class BrokerProxy implements IBrokerProxy {
         }
 
         return users;
+    }
+
+    void setSkipBrokerAccountService(final boolean skipService) {
+        mSkipBrokerAccountService = skipService;
+    }
+
+    boolean getSkipBrokerAccountService() {
+        return mSkipBrokerAccountService;
     }
 }

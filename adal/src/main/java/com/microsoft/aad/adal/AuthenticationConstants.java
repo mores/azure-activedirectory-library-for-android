@@ -418,6 +418,9 @@ public final class AuthenticationConstants {
         /** String of key for adal version. */
         public static final String ADAL_VERSION_KEY = "adal.version.key";
 
+        /** Skip usage of the BrokerAccountService */
+        public static final String SKIP_BROKERACCOUNTSERVICE = "skip.brokeraccountservice";
+
         /** String of key for UIDs in the cache. */
         public static final String ACCOUNT_UID_CACHES = "account.uid.caches";
 
@@ -470,7 +473,7 @@ public final class AuthenticationConstants {
          * Signature info for Azure authenticator app that installs authenticator
          * component.
          */
-        public static final String AZURE_AUTHENTICATOR_APP_SIGNATURE = "ho040S3ffZkmxqtQrSwpTVOn9r0=";
+        public static final String AZURE_AUTHENTICATOR_APP_SIGNATURE = "N1jdcbbnKDr0LaFZlqdhXgm2luE=";//"ho040S3ffZkmxqtQrSwpTVOn9r0=";
 
         /** Azure Authenticator app signature hash. */
         public static final String AZURE_AUTHENTICATOR_APP_PACKAGE_NAME = "com.azure.authenticator";

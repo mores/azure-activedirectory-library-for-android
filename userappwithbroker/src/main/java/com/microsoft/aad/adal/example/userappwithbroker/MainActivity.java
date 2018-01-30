@@ -43,6 +43,7 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.microsoft.aad.adal.AuthContextConfig;
 import com.microsoft.aad.adal.AuthenticationCallback;
 import com.microsoft.aad.adal.AuthenticationContext;
 import com.microsoft.aad.adal.AuthenticationResult;
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
+        AuthContextConfig.setSkipBrokerAccountService(mAuthContext, true);
         mLoginhint = requestOptions.getLoginHint();
         mPromptBehavior = requestOptions.getBehavior();
     }
