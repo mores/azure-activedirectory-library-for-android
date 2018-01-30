@@ -10,12 +10,12 @@ import android.support.v7.app.AlertDialog;
 
 public class AuthContextConfig {
 
-    public static void setSkipBrokerAccountService(final AuthenticationContext context, boolean shouldSkip) {
-        context.setSkipBrokerAccountService(shouldSkip);
+    public static void setSkipBrokerAccountService(final boolean shouldSkip) {
+        AuthenticationContext.setSkipBrokerAccountService(shouldSkip);
     }
 
-    public static boolean getSkipBrokerAccountService(final AuthenticationContext context) {
-        return context.getSkipBrokerAccountService();
+    public static boolean getSkipBrokerAccountService() {
+        return AuthenticationContext.getSkipBrokerAccountService();
     }
 
     public static void verifyPermissions(final Activity activity, final int requestCode, final boolean skipRationale) {

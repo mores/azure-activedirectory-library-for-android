@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mLoginhint = requestOptions.getLoginHint();
         mPromptBehavior = requestOptions.getBehavior();
-        AuthContextConfig.setSkipBrokerAccountService(mAuthContext, true);
+        AuthContextConfig.setSkipBrokerAccountService(true);
         AuthContextConfig.verifyPermissions(this, GET_ACCOUNTS_PERMISSION_REQUEST, false);
     }
 

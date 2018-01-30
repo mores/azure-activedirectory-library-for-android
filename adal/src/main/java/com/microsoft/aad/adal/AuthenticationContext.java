@@ -135,8 +135,8 @@ public class AuthenticationContext {
      *
      * @param skipService Boolean value to skip the BrokerAccountService.
      */
-    void setSkipBrokerAccountService(final boolean skipService) {
-        mBrokerProxy.setSkipBrokerAccountService(skipService);
+    static void setSkipBrokerAccountService(final boolean skipService) {
+        BrokerProxy.setSkipBrokerAccountService(skipService);
     }
 
     /**
@@ -144,8 +144,8 @@ public class AuthenticationContext {
      *
      * @return True, if the BrokerAccountService should be skipped. False otherwise.
      */
-    boolean getSkipBrokerAccountService() {
-        return mBrokerProxy.getSkipBrokerAccountService();
+    static boolean getSkipBrokerAccountService() {
+        return BrokerProxy.getSkipBrokerAccountService();
     }
 
     private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore,

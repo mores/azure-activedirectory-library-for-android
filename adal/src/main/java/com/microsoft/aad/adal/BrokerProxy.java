@@ -1047,11 +1047,11 @@ class BrokerProxy implements IBrokerProxy {
         return users;
     }
 
-    void setSkipBrokerAccountService(final boolean skipService) {
+    static void setSkipBrokerAccountService(final boolean skipService) {
         mSkipBrokerAccountService = skipService;
     }
 
-    boolean getSkipBrokerAccountService() {
+    static boolean getSkipBrokerAccountService() {
         return mSkipBrokerAccountService;
     }
 }
