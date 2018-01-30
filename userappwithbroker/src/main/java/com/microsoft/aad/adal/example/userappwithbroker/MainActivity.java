@@ -23,16 +23,20 @@
 
 package com.microsoft.aad.adal.example.userappwithbroker;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -71,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "UserAppWithBroker.Main";
 
+    private static final int GET_ACCOUNTS_PERMISSION_REQUEST = 0;
+
+    private boolean mGetAccountPermissionGranted = false;
+
     private SharedPreferences mSharedPreference;
     private Context mApplicationContext;
 
@@ -92,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mGetAccountPermissionGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED;
         mApplicationContext = getApplicationContext();
         setUpADALForCallingBroker();
 
@@ -157,14 +166,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onAcquireTokenClicked(final AcquireTokenFragment.RequestOptions requestOptions) {
         prepareRequestParameters(requestOptions);
 
+        if (!mGetAccountPermissionGranted) {
+            return;
+        }
+
         callAcquireTokenWithResource(requestOptions.getDataProfile().getText(), requestOptions.getBehavior(),
                 requestOptions.getLoginHint(), requestOptions.getClientId().getText(), requestOptions.getRedirectUri().getText(), requestOptions.getExtraQp());
     }
 
     @Override
     public void onAcquireTokenSilentClicked(final AcquireTokenFragment.RequestOptions requestOptions) {
-
         prepareRequestParameters(requestOptions);
+
+        if (!mGetAccountPermissionGranted) {
+            return;
+        }
 
         callAcquireTokenSilent(requestOptions.getDataProfile().getText(),getUserIdBasedOnUPN(requestOptions.getLoginHint()+requestOptions.getAuthorityType().getText()),
                 requestOptions.getClientId().getText());
@@ -182,9 +198,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        AuthContextConfig.setSkipBrokerAccountService(mAuthContext, true);
         mLoginhint = requestOptions.getLoginHint();
         mPromptBehavior = requestOptions.getBehavior();
+        AuthContextConfig.setSkipBrokerAccountService(mAuthContext, true);
+        AuthContextConfig.verifyPermissions(this, GET_ACCOUNTS_PERMISSION_REQUEST, false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case GET_ACCOUNTS_PERMISSION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mGetAccountPermissionGranted = true;
+                } else {
+                    showMessage("Cannot proceed. Permission was not granted.");
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     private Handler getHandler() {
@@ -314,8 +347,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Silent acquire token call. Requires to pass the user unique id. If user unique id is not passed, 
-     * silent call to broker will be skipped. 
+     * Silent acquire token call. Requires to pass the user unique id. If user unique id is not passed,
+     * silent call to broker will be skipped.
      */
     private void callAcquireTokenSilent(final String resource, final String userUniqueId, final String clientId) {
         mAuthContext.acquireTokenSilentAsync(resource, clientId, userUniqueId, new AuthenticationCallback<AuthenticationResult>() {
