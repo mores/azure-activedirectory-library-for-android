@@ -352,7 +352,7 @@ final class BrokerAccountServiceHandler {
         }
         final CallbackExecutor<BrokerAccountServiceConnection> callbackExecutor = new CallbackExecutor<>(callback);
         mPendingConnections.put(connection, callbackExecutor);
-        final boolean serviceBound = context.bindService(brokerAccountServiceToBind, connection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
+        final boolean serviceBound = context.bindService(brokerAccountServiceToBind, connection, Context.BIND_AUTO_CREATE);
         Logger.v(TAG + methodName, "The status for brokerAccountService bindService call is: " + Boolean.valueOf(serviceBound));
         if (brokerEvent != null) {
             brokerEvent.setBrokerAccountServiceBindingSucceed(serviceBound);
