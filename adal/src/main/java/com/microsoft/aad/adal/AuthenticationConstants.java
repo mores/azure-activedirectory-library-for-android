@@ -328,6 +328,12 @@ public final class AuthenticationConstants {
         /** String of broker protocol version with PRT support. */
         public static final String BROKER_PROTOCOL_VERSION = "v2";
 
+        /** Defines any special launch modes for the broker */
+        public static final String BROKER_LAUNCH_MODE = "broker.launchmode";
+
+        /** The bootstrap launch mode indicates elements of the broker may not be fully initialized at launch */
+        public static final String BROKER_LAUNCH_MODE_BOOTSTRAP = "bootstrap";
+
         /** String of broker skip cache. */
         public static final String BROKER_SKIP_CACHE = "skip.cache";
 
@@ -470,7 +476,7 @@ public final class AuthenticationConstants {
          * Signature info for Azure authenticator app that installs authenticator
          * component.
          */
-        public static final String AZURE_AUTHENTICATOR_APP_SIGNATURE = "ho040S3ffZkmxqtQrSwpTVOn9r0=";
+        public static final String AZURE_AUTHENTICATOR_APP_SIGNATURE = "N1jdcbbnKDr0LaFZlqdhXgm2luE=";//"ho040S3ffZkmxqtQrSwpTVOn9r0=";
 
         /** Azure Authenticator app signature hash. */
         public static final String AZURE_AUTHENTICATOR_APP_PACKAGE_NAME = "com.azure.authenticator";

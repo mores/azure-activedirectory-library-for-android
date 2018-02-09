@@ -174,61 +174,23 @@ final class BrokerAccountServiceHandler {
      * @return The {@link Intent} to launch the interactive request.
      */
     public Intent getIntentForInteractiveRequest(final Context context, final BrokerEvent brokerEvent) throws AuthenticationException {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final AtomicReference<Intent> bundleResult = new AtomicReference<>(null);
-        final AtomicReference<Throwable> exception = new AtomicReference<>(null);
+        //final String packageName = "com.azure.authenticator";
+        //final String className = packageName + ".ui.AccountChooserActivity";
+        final Intent intent = new Intent("com.microsoft.aad.adal.DIRECT_BOOT");
+        /*
+                    <intent-filter>
+                <action android:name="com.microsoft.aad.adal.DIRECT_BOOT"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+         */
+        //intent.setPackage(packageName);
+        //intent.setClassName(context.getPackageName(), className);
+        intent.putExtra(AuthenticationConstants.Broker.BROKER_VERSION, AuthenticationConstants.Broker.BROKER_PROTOCOL_VERSION);
 
-        performAsyncCallOnBound(context, new Callback<BrokerAccountServiceConnection>() {
-            @Override
-            public void onSuccess(BrokerAccountServiceConnection result) {
-                final IBrokerAccountService brokerAccountService = result.getBrokerAccountServiceProvider();
-                try {
-                    bundleResult.set(brokerAccountService.getIntentForInteractiveRequest());
-                } catch (final RemoteException remoteException) {
-                    exception.set(remoteException);
-                }
+        // set a special mode to bootstrap SecretKeyStorage and DeviceCertProxy
+        intent.putExtra(AuthenticationConstants.Broker.BROKER_LAUNCH_MODE, AuthenticationConstants.Broker.BROKER_LAUNCH_MODE_BOOTSTRAP);
 
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                exception.set(throwable);
-                countDownLatch.countDown();
-            }
-        }, brokerEvent);
-
-        try {
-            countDownLatch.await();
-        } catch (final InterruptedException e) {
-            exception.set(e);
-        }
-
-        final Throwable throwable = exception.getAndSet(null);
-        //AuthenticationException with error code BROKER_AUTHENTICATOR_NOT_RESPONDING will be thrown if there is any exception thrown during binding the service.
-        if (throwable != null) {
-            if (throwable instanceof RemoteException) {
-                Logger.e(TAG, "Get error when trying to get token from broker. ",
-                        throwable.getMessage(), ADALError.BROKER_AUTHENTICATOR_NOT_RESPONDING, throwable);
-                throw new AuthenticationException(ADALError.BROKER_AUTHENTICATOR_NOT_RESPONDING,
-                        throwable.getMessage(),
-                        throwable);
-            } else if (throwable instanceof InterruptedException) {
-                Logger.e(TAG, "The broker account service binding call is interrupted. ",
-                        throwable.getMessage(), ADALError.BROKER_AUTHENTICATOR_EXCEPTION, throwable);
-                throw new AuthenticationException(ADALError.BROKER_AUTHENTICATOR_NOT_RESPONDING,
-                        throwable.getMessage(),
-                        throwable);
-            } else {
-                Logger.e(TAG, "Didn't receive the activity to launch from broker. ",
-                        throwable.getMessage(), ADALError.BROKER_AUTHENTICATOR_NOT_RESPONDING, throwable);
-                throw new AuthenticationException(ADALError.BROKER_AUTHENTICATOR_NOT_RESPONDING,
-                        "Didn't receive the activity to launch from broker: " + throwable.getMessage(),
-                        throwable);
-            }
-        }
-
-        return bundleResult.getAndSet(null);
+        return intent;
     }
 
     /**
