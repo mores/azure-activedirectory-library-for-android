@@ -174,22 +174,10 @@ final class BrokerAccountServiceHandler {
      * @return The {@link Intent} to launch the interactive request.
      */
     public Intent getIntentForInteractiveRequest(final Context context, final BrokerEvent brokerEvent) throws AuthenticationException {
-        //final String packageName = "com.azure.authenticator";
-        //final String className = packageName + ".ui.AccountChooserActivity";
         final Intent intent = new Intent("com.microsoft.aad.adal.DIRECT_BOOT");
-        /*
-                    <intent-filter>
-                <action android:name="com.microsoft.aad.adal.DIRECT_BOOT"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-         */
-        //intent.setPackage(packageName);
-        //intent.setClassName(context.getPackageName(), className);
         intent.putExtra(AuthenticationConstants.Broker.BROKER_VERSION, AuthenticationConstants.Broker.BROKER_PROTOCOL_VERSION);
-
         // set a special mode to bootstrap SecretKeyStorage and DeviceCertProxy
         intent.putExtra(AuthenticationConstants.Broker.BROKER_LAUNCH_MODE, AuthenticationConstants.Broker.BROKER_LAUNCH_MODE_BOOTSTRAP);
-
         return intent;
     }
 
