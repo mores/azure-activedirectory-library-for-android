@@ -665,6 +665,8 @@ class AcquireTokenRequest {
                 if (resultCode == AuthenticationConstants.UIResponse.TOKEN_BROKER_RESPONSE) {
                     final String accessToken = data
                             .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_ACCESS_TOKEN);
+                    final String refreshToken = data
+                            .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_REFRESH_TOKEN);
                     final String accountName = data
                             .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_NAME);
                     mBrokerProxy.saveAccount(accountName);
@@ -683,7 +685,7 @@ class AcquireTokenRequest {
                     final String speRingInfo = data.getStringExtra(AuthenticationConstants.Broker.CliTelemInfo.SPE_RING);
 
                     // create the broker AuthenticationResult
-                    final AuthenticationResult brokerResult = new AuthenticationResult(accessToken, null,
+                    final AuthenticationResult brokerResult = new AuthenticationResult(accessToken, refreshToken,
                             expire, false, userinfo, tenantId, idtoken, null);
                     final String authority = data.getStringExtra(AuthenticationConstants.Broker.ACCOUNT_AUTHORITY);
                     brokerResult.setAuthority(authority);

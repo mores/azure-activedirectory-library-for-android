@@ -275,7 +275,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onSuccess(AuthenticationResult authenticationResult) {
                         mAuthResult = authenticationResult;
-                        showMessage("Response from broker: " + authenticationResult.getAccessToken());
+                        showMessage("Response from broker (AT): " + authenticationResult.getAccessToken());
+                        showMessage("Response from broker (RT): " + authenticationResult.getRefreshToken());
 
                         // Update this user for next call
                         if (authenticationResult.getUserInfo() != null) {
